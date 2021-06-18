@@ -94,8 +94,10 @@ else if( useragent.indexOf('ipad') != -1 || useragent.indexOf('ipod') != -1) loc
 else if( useragent.indexOf('android') != -1 ) {
 if( ConsiderLimits() )
 {
+console.log(123);
 location.replace("https://play.google.com/store/apps/details?id=tw.com.giantapp.sample"); // android pad
 }else{
+console.log(123456);
 location.replace("https://play.google.com/store/apps/details?id=tw.com.giantapp.sample"); // android phone
 }
 
