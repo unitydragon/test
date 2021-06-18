@@ -1,114 +1,101 @@
-<!DOCTYPE html>
-<html lang="en-us">
-
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>HakKaGame</title>
-  <link rel="shortcut icon" href="TemplateData/favicon.ico">
-  <link rel="stylesheet" href="TemplateData/style.css">
-</head>
-
-<body>
-  <div id="unity-container" class="unity-desktop">
-    <canvas id="unity-canvas" width=960 height=540></canvas>
-    <div id="unity-loading-bar">
-      <div id="unity-logo"></div>
-      <div id="unity-progress-bar-empty">
-        <div id="unity-progress-bar-full"></div>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>HakKaGame</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <script type="text/javascript">
+        // borwserRedirect
+        (function browserRedirect(){
+        var sUserAgent = navigator.userAgent.toLowerCase();
+        var bIsIpad = sUserAgent.match(/ipad/i) == 'ipad';
+        var bIsIphone = sUserAgent.match(/iphone os/i) == 'iphone os';
+        var bIsMidp = sUserAgent.match(/midp/i) == 'midp';
+        var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == 'rv:1.2.3.4';
+        var bIsUc = sUserAgent.match(/ucweb/i) == 'web';
+        var bIsCE = sUserAgent.match(/windows ce/i) == 'windows ce';
+        var bIsWM = sUserAgent.match(/windows mobile/i) == 'windows mobile';
+        var bIsAndroid = sUserAgent.match(/android/i) == 'android';
+        if(bIsIpad || bIsIphone || bIsMidp || bIsUc7 || bIsUc || bIsCE || bIsWM || bIsAndroid ){
+        window.location.href = 'https://play.google.com/store/apps/details?id=tw.gov.hakka.elearning&hl=zh-hk';
+        }
+        })();
+        </script>
+  </head>
+  <body>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width="1320" height="743" style="width: 960px; height: 540px; cursor: default;"></canvas>
+      <div id="unity-loading-bar" style="display: none;">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full" style="width: 100%;"></div>
+        </div>
+      </div>
+      <div id="unity-mobile-warning">
+        WebGL builds are not supported on mobile devices.
+      </div>
+      <div id="unity-footer">
+        <div id="unity-webgl-logo"></div>
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">HakKaGame</div>
       </div>
     </div>
-    <div id="unity-mobile-warning">
-      WebGL builds are not supported on mobile devices.
-    </div>
-    <div id="unity-footer">
-      <div id="unity-webgl-logo"></div>
-      <div id="unity-fullscreen-button"></div>
-      <div id="unity-build-title">HakKaGame</div>
-    </div>
-  </div>
-  <script>
-    var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/Downloads.loader.js";
-    var config = {
-      dataUrl: buildUrl + "/Downloads.data",
-      frameworkUrl: buildUrl + "/Downloads.framework.js",
-      codeUrl: buildUrl + "/Downloads.wasm",
-      streamingAssetsUrl: "StreamingAssets",
-      companyName: "StoneHeart",
-      productName: "HakKaGame",
-      productVersion: "1",
-    };
+    <script>
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/Downloads.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/Downloads.data",
+        frameworkUrl: buildUrl + "/Downloads.framework.js",
+        codeUrl: buildUrl + "/Downloads.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "StoneHeart",
+        productName: "HakKaGame",
+        productVersion: "1",
+      };
 
-    var container = document.querySelector("#unity-container");
-    var canvas = document.querySelector("#unity-canvas");
-    var loadingBar = document.querySelector("#unity-loading-bar");
-    var progressBarFull = document.querySelector("#unity-progress-bar-full");
-    var fullscreenButton = document.querySelector("#unity-fullscreen-button");
-    var mobileWarning = document.querySelector("#unity-mobile-warning");
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      var mobileWarning = document.querySelector("#unity-mobile-warning");
 
-    // By default Unity keeps WebGL canvas render target size matched with
-    // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-    // Set this to false if you want to decouple this synchronization from
-    // happening inside the engine, and you would instead like to size up
-    // the canvas DOM size and WebGL render target sizes yourself.
-    // config.matchWebGLToCanvasSize = false;
+      // By default Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
 
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      container.className = "unity-mobile";
-      // Avoid draining fillrate performance on mobile devices,
-      // and default/override low DPI mode on mobile browsers.
-      config.devicePixelRatio = 1;
-      mobileWarning.style.display = "block";
-      setTimeout(() => {
-        mobileWarning.style.display = "none";
-      }, 5000);
-    } else {
-      canvas.style.width = "960px";
-      canvas.style.height = "540px";
-    }
-    loadingBar.style.display = "block";
-
-    var script = document.createElement("script");
-    script.src = loaderUrl;
-    script.onload = () => {
-      createUnityInstance(canvas, config, (progress) => {
-        progressBarFull.style.width = 100 * progress + "%";
-      }).then((unityInstance) => {
-        loadingBar.style.display = "none";
-        fullscreenButton.onclick = () => {
-          unityInstance.SetFullscreen(1);
-        };
-      }).catch((message) => {
-        alert(message);
-      });
-    };
-    document.body.appendChild(script);
-  </script>
-  <script type="text/javascript">
-
-    var URL = document.location.toString();
-    var useragent = navigator.userAgent;
-    useragent = useragent.toLowerCase();
-
-    if (useragent.indexOf('iphone') != -1) location.replace("https://kids.hakka.gov.tw/");//iphone
-    else if (useragent.indexOf('ipad') != -1 || useragent.indexOf('ipod') != -1) location.replace("https://kids.hakka.gov.tw/");//ipad
-    else if (useragent.indexOf('android') != -1) {
-      if (ConsiderLimits()) {
-        location.replace("https://play.google.com/store/apps/details?id=tw.com.giantapp.sample"); // android pad
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        container.className = "unity-mobile";
+        // Avoid draining fillrate performance on mobile devices,
+        // and default/override low DPI mode on mobile browsers.
+        config.devicePixelRatio = 1;
+        mobileWarning.style.display = "block";
+        setTimeout(() => {
+          mobileWarning.style.display = "none";
+        }, 5000);
       } else {
-        location.replace("https://play.google.com/store/apps/details?id=tw.com.giantapp.sample"); // android phone
+        canvas.style.width = "960px";
+        canvas.style.height = "540px";
       }
-    }
+      loadingBar.style.display = "block";
 
-    function ConsiderLimits() {
-      if (screen.width >= 1024 && screen.height >= 600)
-        return 1;
-      return 0;
-    }
-
-  </script>
-  </div>
-</body>
-
-</html>
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+        }).then((unityInstance) => {
+          loadingBar.style.display = "none";
+          fullscreenButton.onclick = () => {
+            unityInstance.SetFullscreen(1);
+          };
+        }).catch((message) => {
+            alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    </script><script src="Build/Downloads.loader.js"></script>   
+<script src="Build/Downloads.framework.js"></script></body></html>
