@@ -83,27 +83,32 @@
       };
       document.body.appendChild(script);
     </script>
-	<div class="row m-0 rightcard">
-                    <div class="col-lg-2 col-md-2 col-4 p-0 download_bc">
-                        <span class="font-12">APP<br>下載</span>
-                    </div>
-                    
-                    <div class="col-lg-5 col-md-5 col-4 p-0 text-center" onclick="location.href ='https://play.google.com/store/apps/details?id=tw.gov.hakka.elearning&amp;hl=zh-hk'">
-                        <div class="w-100 p_5 download_center c_point">
-                            <img src="/Content/img/googleplay.png" class="img_Adaptive AppImg">
-                        </div>
-                        <div class="w-100 download_center">
-                            <span class="font-12">google play</span>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 col-md-5 col-4 p-0 text-center">
-                        <div class="w-100 p_5 download_center c_point">
-                            <img src="/Content/img/apple.png" class="img_Adaptive AppImg">
-                        </div>
-                        <div class="w-100 download_center">
-                            <span class="font-12">apple store</span>
-                        </div>
-                    </div>
+<script type="text/javascript">
+
+var URL = document.location.toString();
+var useragent = navigator.userAgent;
+useragent = useragent.toLowerCase();
+
+if( useragent.indexOf('iphone') != -1 ) location.replace("https://itunes.apple.com/us/app/li-da-zi-xun-xing-dongapp/id665035983?l=zh&ls=1&mt=8");//iphone
+else if( useragent.indexOf('ipad') != -1 || useragent.indexOf('ipod') != -1) location.replace("https://itunes.apple.com/us/app/li-da-zi-xun-xing-dongapp/id665035983?l=zh&ls=1&mt=8");//ipad
+else if( useragent.indexOf('android') != -1 ) {
+if( ConsiderLimits() )
+{
+location.replace("https://play.google.com/store/apps/details?id=tw.com.giantapp.sample"); // android pad
+}else{
+location.replace("https://play.google.com/store/apps/details?id=tw.com.giantapp.sample"); // android phone
+}
+}else{
+location.replace("http://www.e-giant.com.tw/"); // PC
+}
+
+function ConsiderLimits() {
+if( screen.width >= 1024 && screen.height >= 600 )
+return 1;
+return 0;
+}
+
+</script>
     </div>
   </body>
 </html>
